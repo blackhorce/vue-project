@@ -49,11 +49,21 @@ export const deleteUser = params => {
 }
 
 // 获取角色列表
-export const getRoleList = params => {
+export const getRoleList = () => {
 	return axios.get('roles').then(res => res.data)
 }
 
 // 分配角色
 export const grantRole = params => {
 	return axios.put(`users/${params.id}/role`, params).then(res => res.data)
+}
+
+// 获取权限列表
+export const getRightsList = params => {
+	return axios.get(`rights/${params.type}`).then(res => res.data)
+}
+
+// 删除角色指定权限
+export const deleteRoleRights = params => {
+	return axios.delete(`roles/${params.roleId}/rights/${params.rightId}`).then(res => res.data)
 }

@@ -3,7 +3,7 @@
 		<el-row>
 			<el-col :span="24">
 				<el-breadcrumb separator-class="el-icon-arrow-right">
-					<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{path: '/'}">首页</el-breadcrumb-item>
 					<el-breadcrumb-item>用户管理</el-breadcrumb-item>
 					<el-breadcrumb-item>用户列表</el-breadcrumb-item>
 				</el-breadcrumb>
@@ -29,9 +29,9 @@
 			</el-table-column>
 			<el-table-column label="操作">
 				<template slot-scope="scope">
-					<el-button size="mini" type="primary" plain icon="el-icon-edit" @click="showEditDialog(scope.row)"></el-button>
-					<el-button size="mini" type="danger" plain icon="el-icon-delete" @click="showDeleteDialog(scope.row)"></el-button>
-					<el-button size="mini" type="warning" plain icon="el-icon-check" @click="showGrantDialog(scope.row)"></el-button>
+					<el-button size="mini" type="primary" plain icon="el-icon-edit" title="编辑用户" @click="showEditDialog(scope.row)"></el-button>
+					<el-button size="mini" type="danger" plain icon="el-icon-delete" title="删除用户" @click="showDeleteDialog(scope.row)"></el-button>
+					<el-button size="mini" type="warning" plain icon="el-icon-check" title="分配角色" @click="showGrantDialog(scope.row)"></el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -82,7 +82,7 @@
 				</el-form-item>
 				<el-form-item label="请选择角色：">
 					<el-select placeholder="请选择角色" v-model="roleId">
-						<el-option v-for="(role, index) in roleList" :label="role.roleName" :value="role.id"></el-option>
+						<el-option v-for="(role, index) in roleList" :key="index" :label="role.roleName" :value="role.id"></el-option>
 					</el-select>
 				</el-form-item>
 			</el-form>
