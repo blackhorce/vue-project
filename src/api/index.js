@@ -19,6 +19,6 @@ export const loginPost = params => {
 }
 
 // 请求用户列表
-// export const getUserList = params => {
-// 	return axios.get('/users', params).then(res => res.data)
-// }
+export const getUserList = params => {
+	return axios.get('/users', params).then(res => res.data)
+}

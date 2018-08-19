@@ -34,8 +34,6 @@
 </template>
 
 <script>
-	// import {getUserList} from '../api/index.js'
-
 	export default {
 		data() {
 			return {
