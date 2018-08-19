@@ -46,6 +46,8 @@
 						loginPost(this.form).then(res => {
 							if (res.meta.status === 200) {
 								localStorage.setItem('token', res.data.token)
+								localStorage.setItem('username', res.data.username)
+								this.$store.commit('setUsername', res.data.username)
 								this.$message({
 									type: 'success',
 									message: res.meta.msg
@@ -54,7 +56,7 @@
 							} else {
 								this.$message({
 									type: 'error',
-									message: res.meta.msg
+									message: '用户名或密码错误'
 								})
 							}
 						})
