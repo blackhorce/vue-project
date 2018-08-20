@@ -49,19 +49,19 @@
 		</el-table>
 		<el-dialog title="授权角色" :visible.sync="rightsTreeDialogVisible">
 			<div class="tree-container">
-				<el-tree :data="rightsTree" show-checkbox node-key="id" :props="defaultProps" :default-checked-keys="selectedRights" :default-expand-all="true">
+				<el-tree :data="rightsTree" ref="tree" show-checkbox node-key="id" :props="defaultProps" :default-checked-keys="selectedRights" :default-expand-all="true">
 				</el-tree>
 			</div>
 		<span slot="footer" class="dialog-footer">
 			<el-button @click="rightsTreeDialogVisible = false">取 消</el-button>
-			<el-button type="primary" @click="rightsTreeDialogVisible = false">确 定</el-button>
+			<el-button type="primary" @click="grantRightsSubmit">确 定</el-button>
 		</span>
 	</el-dialog>
 	</div>
 </template>
 
 <script>
-	import {getRoleList, deleteRoleRights, getRightsList} from '../../api/index.js'
+	import {getRoleList, deleteRoleRights, getRightsList, grantRights} from '../../api/index.js'
 
 	export default {
 		data() {
@@ -70,14 +70,29 @@
 				roleList: [],
 				rightsTreeDialogVisible: false,
 				rightsTree: [],
-				selectedRights: [],
 				defaultProps: {
 					children: 'children',
 					label: 'authName'
-				}
+				},
+				selectedRights: [],
+				currentRole: {}
 			}
 		},
 		methods: {
+			initRoleList() {
+				this.loading = true
+				getRoleList().then(res => {
+					if (res.meta.status === 200) {
+						this.roleList = res.data
+					} else {
+						this.$message({
+							type: 'warning',
+							message: res.meta.msg
+						})
+					}
+					this.loading = false
+				})
+			},
 			deleteRights(row, rightId) {
 				deleteRoleRights({roleId: row.id, rightId}).then(res => {
 					if (res.meta.status === 200) {
@@ -92,6 +107,7 @@
 			},
 			showRightsTreeDialog(row) {
 				this.rightsTreeDialogVisible = true
+				this.currentRole = row
 				getRightsList({type: 'tree'}).then(res => {
 					if (res.meta.status === 200) {
 						this.rightsTree = res.data
@@ -114,21 +130,28 @@
 						}
 					})
 				})
+			},
+			grantRightsSubmit() {
+				let rids = this.$refs.tree.getCheckedKeys().join(',')
+				grantRights(this.currentRole.id, {rids}).then(res => {
+					if (res.meta.status === 200) {
+						this.$message({
+							type: 'success',
+							message: res.meta.msg
+						})
+						this.rightsTreeDialogVisible = false
+						this.initRoleList()
+					} else {
+						this.$message({
+							type: 'warning',
+							message: res.meta.msg
+						})
+					}
+				})
 			}
 		},
 		created() {
-			this.loading = true
-			getRoleList().then(res => {
-				if (res.meta.status === 200) {
-					this.roleList = res.data
-				} else {
-					this.$message({
-						type: 'warning',
-						message: res.meta.msg
-					})
-				}
-				this.loading = false
-			})
+			this.initRoleList()
 		}
 	}
 </script>

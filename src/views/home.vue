@@ -4,28 +4,14 @@
 			<el-aside width="auto">
 				<div class="logo"></div>
 				<el-menu default-active="1" :unique-opened="true" :router="true" :collapse="isCollapse" class="el-menu-admin" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
-					<el-submenu index="1">
+					<el-submenu :index="menu.path" v-for="menu in menus" :key="menu.id">
 						<template slot="title">
 							<i class="el-icon-location"></i>
-							<span>用户管理</span>
+							<span>{{menu.authName}}</span>
 						</template>
-						<el-menu-item index="/user">
+						<el-menu-item :index="submenu.path" v-for="submenu in menu.children" :key="submenu.id">
 							<i class="el-icon-menu"></i>
-							<span slot="title">用户列表</span>
-						</el-menu-item>
-					</el-submenu>
-					<el-submenu index="2">
-						<template slot="title">
-							<i class="el-icon-location"></i>
-							<span>权限管理</span>
-						</template>
-						<el-menu-item index="/role">
-							<i class="el-icon-menu"></i>
-							<span slot="title">角色列表</span>
-						</el-menu-item>
-						<el-menu-item index="/rights">
-							<i class="el-icon-menu"></i>
-							<span slot="title">权限列表</span>
+							<span slot="title">{{submenu.authName}}</span>
 						</el-menu-item>
 					</el-submenu>
 				</el-menu>
@@ -48,10 +34,13 @@
 </template>
 
 <script>
+	import {getMenus} from '../api/index.js'
+
 	export default {
 		data() {
 			return {
-				isCollapse: false
+				isCollapse: false,
+				menus: []
 			}
 		},
 		methods: {
@@ -62,6 +51,18 @@
 				localStorage.removeItem('token')
 				this.$router.push('/login')
 			}
+		},
+		created() {
+			getMenus().then(res => {
+				if (res.meta.status === 200) {
+					this.menus = res.data
+				} else {
+					this.$message({
+						type: 'warning',
+						message: res.meta.msg
+					})
+				}
+			})
 		}
 	}
 </script>
